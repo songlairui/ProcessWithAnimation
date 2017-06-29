@@ -1,0 +1,140 @@
+// 三角函数，使用泰勒展开公式
+@function pow($number, $exp) {
+  $value: 1;
+  @if $exp>0 {
+    @for $i from 1 through $exp {
+      $value: $value * $number;
+    }
+  }
+  @else if $exp < 0 {
+    @for $i from 1 through -$exp {
+      $value: $value / $number;
+    }
+  }
+  @return $value;
+}
+
+@function fact($number) {
+  $value: 1;
+  @if $number>0 {
+    @for $i from 1 through $number {
+      $value: $value * $i;
+    }
+  }
+  @return $value;
+}
+
+@function pi() {
+  @return 3.14159265359;
+}
+
+@function rad($angle) {
+  $unit: deg;
+  @debug '传入的angle',
+  $angle;
+  $unitless: $angle / ($angle * 0 + 1);
+  @if $unit==deg {
+    $unitless: $unitless / 180 * pi();
+  }
+  @return $unitless;
+}
+
+@debug '-125 * 0',
+-125 * 0;
+@function sin($angle) {
+  $sin: 0;
+  $angle: rad($angle);
+  @for $i from 0 through 10 {
+    $sin: $sin + pow(-1, $i) * pow($angle, (2*$i +1)) / fact(2*$i +1)
+  }
+  @return $sin;
+}
+
+@function cos($angle) {
+  $cos: 0;
+  $angle: rad($angle);
+  @for $i from 0 through 10 {
+    $cos: $cos + pow(-1, $i) * pow($angle, 2 * $i) / fact(2 * $i);
+  }
+  @return $cos;
+}
+
+@function tan($angle) {
+  @return sin($angle) / cos($angle)
+}
+
+@debug sin(pi()/4);
+.text {
+  // flex-wrap: wrap;
+  $n: 24;
+  @for $i from 1 to 40 {
+    span:nth-child(#{$i}) {
+      animation-delay : #{-1 - ( ($n + $i) * ($n - $i) / $n / $n)}s;
+    }
+  }
+}
+
+.text {
+  // border: 1px solid yellow;
+  font-family: monospace;
+  font-size: 1.2em;
+  padding: 1em 0;
+  transform-style: preserve-3d;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  span {
+    display: flex;
+    border: thin solid lightblue;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0;
+    // width: 20px;
+    height: 20px;
+    margin: 20px 0;
+    animation: queueO 1s ease 0s infinite normal forwards running;
+    // transform: rotate3d(0.7, 0.8, 0.4, 55deg);
+    // transform-origin: left;
+    // transition: transform 4s;
+  }
+}
+
+.text:hover span {
+  animation-play-state: running;
+  border-color: snow;
+}
+
+@keyframes queueO {
+  0%,
+  45%,
+  85%,
+  100% {
+    transform: perspective(50px) scale(1, 1) rotateY(0deg);
+  }
+  @for $i from 1 to 6 {
+    #{50 + $i * 5}% {
+      $deg: 30 - $i * 10;
+      @debug sin((-90 + $deg)),
+      cos($deg);
+      $scaleX: sin((-90 + $deg));
+      $scaleY: pow(cos($deg), 5)*1.6;
+      $rotateY:#{$deg}deg;
+      transform: perspective(50px) scale(#{-$scaleX}, #{$scaleY}) rotateY(#{$rotateY});
+    }
+  }
+}
+
+.code{
+  white-space: pre-line;
+  color: yellowgreen;
+  background: #345;
+  padding: .5em;
+  font-family: monospace;
+}
+.code::before{
+  content: 'code: ';
+  color: white;
+}
+.code::after{
+  content: ''
+}
