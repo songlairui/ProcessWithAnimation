@@ -128,7 +128,7 @@
     border: thin solid lightblue;
     justify-content: center;
     align-items: center;
-    flex: 0 0;
+    flex: 0 0 .5em;
     height: 20px;
     margin: 20px 0;
     animation: queueO 1s ease 0s infinite normal forwards running; }
